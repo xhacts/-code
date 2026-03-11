@@ -1,0 +1,46 @@
+#include<iostream>
+#include<stack>
+using namespace std;
+
+stack<int> s;
+
+//移除栈顶元素，其余元素依次下沉
+//返回栈顶元素
+int bottomOut(stack<int> &s) {
+	int ans = s.top();
+	s.pop();
+
+	if (s.empty()) {
+		return ans;
+	}
+	else {
+		int last = bottomOut(s);
+		s.push(ans);
+		return last;
+	}
+}
+
+void reverse(stack<int> &s) {
+	if (s.empty()) {
+		return;
+	}
+	
+	int num = bottomOut(s);
+	reverse(s);
+	s.push(num);
+}
+
+int main() {
+	for (int i = 1; i < 6; i++) {
+		s.push(i);
+	}
+
+	reverse(s);
+
+	for (int i = 0; i < 5; i++) {
+		cout << s.top()<<" ";
+		s.pop();
+	}
+	
+	return 0;
+}
