@@ -1,0 +1,90 @@
+#include<iostream>
+#include<stack>
+#include<algorithm>
+using namespace std;
+
+stack<int> arr;
+
+//返回栈的深度
+//不改变栈的数据状况
+int deep(stack<int>& arr) {
+	if (arr.empty()) {
+		return 0;
+	}
+	int num = arr.top();
+	arr.pop();
+	int Deep = deep(arr) + 1;
+	arr.push(num);
+	return Deep;
+}
+
+//从栈当前的顶部开始，往下数Deep层
+//返回这Deep层里的最大值
+int MAX(stack<int>& arr, int Deep) {
+	if (Deep==0) {
+		return INT_MIN;
+	}
+	int num = arr.top();
+	arr.pop();
+	int restMAX = MAX(arr, Deep - 1);
+	int MAXX = max(num, restMAX);
+	arr.push(num);
+	return MAXX;
+}
+
+//从栈当前的顶部开始，往下数Deep层，已知最大值是max了
+//返回，max出现了几次，不改变栈大的数据状况
+int times(stack<int>& arr, int Deep, int MAX) {
+	if (Deep==0) {
+		return 0;
+	}
+	int num = arr.top();
+	arr.pop();
+	int restimes = times(arr, Deep - 1,MAX);
+	int k = restimes + (num == MAX ? 1 : 0);
+	arr.push(num);
+	return k;;
+}
+
+//从栈当前的顶部开始，往下数Deep层，已知最大值是max了，出现了k次
+//请把这k个最大值沉底，剩下的数据状况不变
+void down(stack<int>& arr, int Deep, int MAX, int k) {
+	if (Deep == 0) {
+		for (int i = 0; i < k; i++) {
+			arr.push(MAX);
+		}
+		return;
+	}
+	int num = arr.top();
+	arr.pop();
+	down(arr, Deep - 1, MAX, k);
+	if (num != MAX) {
+		arr.push(num);
+	}
+}
+
+void Sort(stack<int>& arr) {
+	int Deep = deep(arr);
+	while (Deep > 0) {
+		int MAXX = MAX(arr, Deep);
+		int k = times(arr, Deep, MAXX);
+		down(arr, Deep, MAXX, k);
+		Deep -= k;
+	}
+}
+
+int main() {
+	for (int i = 0; i < 8; i++) {
+		int x;
+		cin >> x;
+		arr.push(x);
+	}
+
+	Sort(arr);
+
+	for (int i = 0; i < 8; i++) {
+		cout << arr.top()<<" ";
+		arr.pop();
+	}
+	return 0;
+}
