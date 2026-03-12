@@ -1,0 +1,26 @@
+#include<iostream>
+using namespace std;
+
+//打印n层汉诺塔问题的最优移动轨迹
+void f(int n, string from, string to, string other) {
+	if (n == 1) {
+		cout << "移动圆盘1从" << from << "到" << to << endl;
+	}
+	else {
+		f(n - 1, from, other, to);
+		cout << "移动圆盘" << n << "从" << from << "到" << other << endl;
+		f(n - 1, other, to, from);
+	}
+}
+
+void hanoi(int n) {
+	if (n > 0) {
+		f(n,"左","中","右");
+	}
+}
+
+int main() {
+	int n = 3;
+	hanoi(n);
+	return 0;
+}
